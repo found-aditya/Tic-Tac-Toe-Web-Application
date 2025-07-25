@@ -1,1 +1,2 @@
-# Tic-Tac-Toe-Web-Application
+# Tic-Tac-Toe-Web-Application <br>
+Tic Tac Toe is a classic two-player game where players take turns marking X and O on a 3x3 grid, aiming to be the first to get three in a row—horizontally, vertically, or diagonally. This web-based version features automatic win and draw detection, along with a reset button for easy restarts. Built using HTML, CSS, and JavaScript, it offers a simple and engaging way to enjoy this timeless game in your browser.
