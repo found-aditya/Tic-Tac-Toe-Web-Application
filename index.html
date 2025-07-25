@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Navigation styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        /* Game area styles */
+        .game-title {
+            margin-top: 80px; /* Space for the fixed navbar */
+            text-align: center;
+            color: #333;
+        }
+        
+        .game-container {
+            width: 300px;
+            margin: 20px auto;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin: 20px 0;
+        }
+        
+        .cell {
+            height: 100px;
+            background: white;
+            border: 2px solid #aaa;
+            font-size: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .game-status {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        
+        .reset-btn {
+            padding: 10px 20px;
+            background: #888;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        /* About section styles */
+        .about-container {
+            text-align: center;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        .about-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .about-description {
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">GameSite</a>
+        <div class="nav-links">
+            <a href="#game">Play Game</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+    
+    <div class="game-title">
+        <h1>Tic Tac Toe</h1>
+    </div>
+    
+    <section id="game" class="game-container">
+        <div class="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div class="game-status">Player X's turn</div>
+        <button class="reset-btn">Reset Game</button>
+    </section>
+
+    <section id="about" class="about-container">
+        <div class="about-title">About Tic Tac Toe</div>
+        <div class="about-description">
+            Tic Tac Toe is a simple game where two players take turns marking a square on a 3x3 grid. 
+            The first player to get three of their marks in a row wins the game.
+        </div>
+    </section>
+    
+    <script>
+        // Game setup
+        let currentPlayer = 'X';
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        
+        const winningCombos = [
+            [0,1,2], [3,4,5], [6,7,8], // rows
+            [0,3,6], [1,4,7], [2,5,8], // columns
+            [0,4,8], [2,4,6] // diagonals
+        ];
+        
+        // DOM Elements
+        const cells = document.querySelectorAll('.cell');
+        const gameStatus = document.querySelector('.game-status');
+        const resetButton = document.querySelector('.reset-btn');
+        
+        // Handle player moves
+        function handleCellClick(e) {
+            const cellIndex = e.target.getAttribute('data-index');
+            
+            if (gameState[cellIndex] !== '' || !gameActive) {
+                return;
+            }
+            
+            gameState[cellIndex] = currentPlayer;
+            e.target.textContent = currentPlayer;
+            
+            if (checkWin()) {
+                gameStatus.textContent = 'Player ' + currentPlayer + ' won!';
+                gameActive = false;
+                return;
+            }
+            
+            if (checkDraw()) {
+                gameStatus.textContent = 'Game ended in a tie!';
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            gameStatus.textContent = "Player " + currentPlayer + "'s turn";
+        }
+        
+        function checkWin() {
+            return winningCombos.some(combo => {
+                return combo.every(index => gameState[index] === currentPlayer);
+            });
+        }
+        
+        function checkDraw() {
+            return gameState.every(cell => cell !== '');
+        }
+        
+        function resetGame() {
+            currentPlayer = 'X';
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            gameStatus.textContent = "Player X's turn";
+            cells.forEach(cell => cell.textContent = '');
+        }
+        
+        // Event Listeners
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        resetButton.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
